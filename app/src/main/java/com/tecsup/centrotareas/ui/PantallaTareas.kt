@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.tecsup.centrotareas.model.CargaUi
 import com.tecsup.centrotareas.model.PrimosUi
 import com.tecsup.centrotareas.ui.theme.VerdeFondo
 import com.tecsup.centrotareas.ui.theme.VerdeTexto
@@ -47,6 +49,7 @@ fun PantallaTareas(vm: TareasViewModel) {
     val progreso by vm.progreso.collectAsState()
     val corriendo by vm.corriendo.collectAsState()
     val primos by vm.primos.collectAsState()
+    val carga by vm.carga.collectAsState()
     var toques by rememberSaveable { mutableIntStateOf(0) }
     var textoN by rememberSaveable { mutableStateOf("12000000") }
     var contadoHasta by rememberSaveable { mutableIntStateOf(0) }
@@ -54,6 +57,7 @@ fun PantallaTareas(vm: TareasViewModel) {
     val numero = textoN.toIntOrNull()
     val numeroValido = numero != null && numero >= 2
     val calculando = primos == PrimosUi.Calculando
+    val cargando = carga == CargaUi.Cargando
 
     Scaffold(
         topBar = {
@@ -140,7 +144,31 @@ fun PantallaTareas(vm: TareasViewModel) {
                 }
             }
             TarjetaTarea(titulo = "Dos cargas") {
-                // TODO Pasos 6 y 7: Una por una, A la vez, Simular error y resultado
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = { vm.cargarUnaPorUna() },
+                        enabled = !cargando
+                    ) {
+                        Text("Una por una")
+                    }
+                    Button(
+                        onClick = { vm.cargarALaVez() },
+                        enabled = !cargando
+                    ) {
+                        Text("A la vez")
+                    }
+                }
+                when (val estado = carga) {
+                    CargaUi.Inicial -> Unit
+                    CargaUi.Cargando -> CircularProgressIndicator()
+                    is CargaUi.Exito -> RecuadroExito(
+                        titulo = "Modo: ${estado.modo}",
+                        detalle = "Perfil: ${estado.perfil}\n" +
+                                "Pedidos: ${estado.pedidos}\n" +
+                                "Tiempo: ${estado.milisegundos} ms"
+                    )
+                    is CargaUi.Error -> Text(estado.mensaje)
+                }
             }
         }
     }
