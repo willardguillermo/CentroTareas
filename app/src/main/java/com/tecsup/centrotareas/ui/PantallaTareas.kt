@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -50,6 +52,7 @@ fun PantallaTareas(vm: TareasViewModel) {
     val corriendo by vm.corriendo.collectAsState()
     val primos by vm.primos.collectAsState()
     val carga by vm.carga.collectAsState()
+    val simularError by vm.simularError.collectAsState()
     var toques by rememberSaveable { mutableIntStateOf(0) }
     var textoN by rememberSaveable { mutableStateOf("12000000") }
     var contadoHasta by rememberSaveable { mutableIntStateOf(0) }
@@ -144,6 +147,17 @@ fun PantallaTareas(vm: TareasViewModel) {
                 }
             }
             TarjetaTarea(titulo = "Dos cargas") {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Simular error")
+                    Switch(
+                        checked = simularError,
+                        onCheckedChange = { vm.cambiarSimularError(it) }
+                    )
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(
                         onClick = { vm.cargarUnaPorUna() },
@@ -167,7 +181,10 @@ fun PantallaTareas(vm: TareasViewModel) {
                                 "Pedidos: ${estado.pedidos}\n" +
                                 "Tiempo: ${estado.milisegundos} ms"
                     )
-                    is CargaUi.Error -> Text(estado.mensaje)
+                    is CargaUi.Error -> RecuadroError(
+                        mensaje = estado.mensaje,
+                        onReintentar = { vm.cargarALaVez() }
+                    )
                 }
             }
         }
@@ -210,5 +227,32 @@ private fun RecuadroExito(titulo: String, detalle: String) {
     ) {
         Text(text = titulo, color = VerdeTexto, fontWeight = FontWeight.Bold)
         Text(text = detalle, color = VerdeTexto, style = MaterialTheme.typography.bodySmall)
+    }
+}
+
+@Composable
+private fun RecuadroError(mensaje: String, onReintentar: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.errorContainer, RoundedCornerShape(8.dp))
+            .padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = mensaje,
+            color = MaterialTheme.colorScheme.onErrorContainer,
+            fontWeight = FontWeight.Bold
+        )
+        Button(
+            onClick = onReintentar,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            )
+        ) {
+            Text("Reintentar")
+        }
     }
 }
