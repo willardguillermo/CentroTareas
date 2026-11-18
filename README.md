@@ -113,7 +113,7 @@ Contar primos usa el procesador todo el tiempo. `Default` tiene tantos hilos com
 **5. ¿Por qué async tarda 3 s y no 5 s? ¿Qué pasa si una de las dos cargas falla?**
 Con `async`, las dos cargas empiezan al mismo tiempo y `await()` espera a ambas, así que el total es lo que tarda la más lenta: máx(2 s, 3 s) ≈ 3 s. Una por una, en cambio, suma 2 s + 3 s ≈ 5 s. Si una falla, `coroutineScope` cancela la otra y relanza la excepción. El `try/catch` del ViewModel la atrapa y muestra el estado de error con el botón Reintentar, sin que la app se cierre.
 
-## Guía de sustentación
+## Guía de sustentación (rama main)
 
 | Concepto | Dónde está |
 |---|---|
@@ -132,6 +132,31 @@ Con `async`, las dos cargas empiezan al mismo tiempo y `await()` espera a ambas,
 | La vista observa el estado con `collectAsState()` | `ui/PantallaTareas.kt:50-55` |
 | Botones habilitados según el estado | `ui/PantallaTareas.kt:91`, `:97` |
 | Reintentar | `ui/PantallaTareas.kt:186` |
+
+## Fase 2 · Mejoras con IA (rama `mejora-ia`)
+
+Mejoras hechas con Gemini en Android Studio, revisadas y probadas antes de cada commit. El detalle de cada prompt está en [PROMPTS.md](PROMPTS.md).
+
+| Mejora | Qué logra | Capas que cambian |
+|---|---|---|
+| Progreso desde el Repository | La tarea con progreso se movió al Repository y emite su avance como `Flow` con `flow { emit(...) }` y `flowOn(Dispatchers.Default)`; el ViewModel solo lo recolecta | Repository + ViewModel |
+| Primos con progreso | El cálculo de primos muestra una barra y el porcentaje mientras avanza, y si se cancela dice en qué porcentaje quedó | Repository + ViewModel + View |
+| Comparación de tiempos | Tabla con las últimas 5 cargas exitosas de cada modo, su promedio y la diferencia | ViewModel + View |
+
+| Primos con progreso (cancelado al 50 %) | Comparación de tiempos |
+|---|---|
+| <img src="capturas/mejora-b-primos-cancelado.png" width="260"> | <img src="capturas/mejora-c-tiempos.png" width="260"> |
+
+**Dónde está cada mejora**
+
+| Concepto | Dónde está |
+|---|---|
+| `Flow` con `emit` y `flowOn(Dispatchers.Default)` | `data/TareasRepositoryLocal.kt:15-21` |
+| El ViewModel recolecta el `Flow` | `viewmodel/TareasViewModel.kt:40` |
+| El Repository avisa su avance con `alAvanzar` cada 1 % | `data/TareasRepositoryLocal.kt:36-42` |
+| `StateFlow` del progreso de primos | `viewmodel/TareasViewModel.kt:60-61`, `:72` |
+| Guardar solo cargas exitosas con `takeLast(5)` | `viewmodel/TareasViewModel.kt:118`, `:140` |
+| Tabla con promedio y diferencia | `ui/PantallaTareas.kt:212`, `:246-259` |
 
 ## Cómo ejecutar
 
