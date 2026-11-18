@@ -57,15 +57,19 @@ class TareasViewModel(private val repo: TareasRepository) : ViewModel() {
     private val _primos = MutableStateFlow<PrimosUi>(PrimosUi.Inicial)
     val primos: StateFlow<PrimosUi> = _primos.asStateFlow()
 
+    private val _progresoPrimos = MutableStateFlow(0f)
+    val progresoPrimos: StateFlow<Float> = _progresoPrimos.asStateFlow()
+
     private var trabajoPrimos: Job? = null
 
     fun contar(hasta: Int) {
         if (_primos.value == PrimosUi.Calculando) return
         _primos.value = PrimosUi.Calculando
+        _progresoPrimos.value = 0f
         trabajoPrimos = viewModelScope.launch {
             val inicio = System.currentTimeMillis()
             try {
-                val cantidad = repo.contarPrimos(hasta)
+                val cantidad = repo.contarPrimos(hasta) { _progresoPrimos.value = it }
                 val ms = System.currentTimeMillis() - inicio
                 _primos.value = PrimosUi.Listo(cantidad, ms)
             } catch (e: CancellationException) {

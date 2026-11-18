@@ -51,6 +51,7 @@ fun PantallaTareas(vm: TareasViewModel) {
     val progreso by vm.progreso.collectAsState()
     val corriendo by vm.corriendo.collectAsState()
     val primos by vm.primos.collectAsState()
+    val progresoPrimos by vm.progresoPrimos.collectAsState()
     val carga by vm.carga.collectAsState()
     val simularError by vm.simularError.collectAsState()
     var toques by rememberSaveable { mutableIntStateOf(0) }
@@ -138,12 +139,18 @@ fun PantallaTareas(vm: TareasViewModel) {
                 }
                 when (val estado = primos) {
                     PrimosUi.Inicial -> Unit
-                    PrimosUi.Calculando -> Text("Calculando...")
+                    PrimosUi.Calculando -> {
+                        LinearProgressIndicator(
+                            progress = { progresoPrimos },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Text("Calculando... ${(progresoPrimos * 100).toInt()} %")
+                    }
                     is PrimosUi.Listo -> RecuadroExito(
                         titulo = "Primos hasta $contadoHasta: ${estado.cantidad}",
                         detalle = "Tiempo: ${estado.milisegundos} ms"
                     )
-                    PrimosUi.Cancelado -> Text("Cancelado")
+                    PrimosUi.Cancelado -> Text("Cancelado al ${(progresoPrimos * 100).toInt()} %")
                 }
             }
             TarjetaTarea(titulo = "Dos cargas") {
