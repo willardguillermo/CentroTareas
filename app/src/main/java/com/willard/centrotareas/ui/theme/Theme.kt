@@ -1,4 +1,4 @@
-package com.tecsup.centrotareas.ui.theme
+package com.willard.centrotareas.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

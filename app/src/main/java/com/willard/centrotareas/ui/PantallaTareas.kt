@@ -1,4 +1,4 @@
-package com.tecsup.centrotareas.ui
+package com.willard.centrotareas.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,11 +38,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.tecsup.centrotareas.model.CargaUi
-import com.tecsup.centrotareas.model.PrimosUi
-import com.tecsup.centrotareas.ui.theme.VerdeFondo
-import com.tecsup.centrotareas.ui.theme.VerdeTexto
-import com.tecsup.centrotareas.viewmodel.TareasViewModel
+import com.willard.centrotareas.model.CargaUi
+import com.willard.centrotareas.model.PrimosUi
+import com.willard.centrotareas.ui.theme.VerdeFondo
+import com.willard.centrotareas.ui.theme.VerdeTexto
+import com.willard.centrotareas.viewmodel.TareasViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

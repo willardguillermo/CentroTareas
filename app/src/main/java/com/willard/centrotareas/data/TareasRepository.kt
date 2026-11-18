@@ -1,4 +1,4 @@
-package com.tecsup.centrotareas.data
+package com.willard.centrotareas.data
 
 interface TareasRepository {
     suspend fun contarPrimos(hasta: Int): Int

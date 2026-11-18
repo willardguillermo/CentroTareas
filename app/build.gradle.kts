@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "com.tecsup.centrotareas"
+    namespace = "com.willard.centrotareas"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.tecsup.centrotareas"
+        applicationId = "com.willard.centrotareas"
         minSdk = 24
         targetSdk = 37
         versionCode = 1

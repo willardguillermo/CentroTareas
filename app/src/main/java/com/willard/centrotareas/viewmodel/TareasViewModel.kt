@@ -1,11 +1,11 @@
-package com.tecsup.centrotareas.viewmodel
+package com.willard.centrotareas.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tecsup.centrotareas.data.TareasRepository
-import com.tecsup.centrotareas.model.CargaUi
-import com.tecsup.centrotareas.model.PrimosUi
+import com.willard.centrotareas.data.TareasRepository
+import com.willard.centrotareas.model.CargaUi
+import com.willard.centrotareas.model.PrimosUi
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

@@ -1,8 +1,8 @@
-package com.tecsup.centrotareas.viewmodel
+package com.willard.centrotareas.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.tecsup.centrotareas.data.TareasRepository
+import com.willard.centrotareas.data.TareasRepository
 
 class TareasViewModelFactory(
     private val repo: TareasRepository

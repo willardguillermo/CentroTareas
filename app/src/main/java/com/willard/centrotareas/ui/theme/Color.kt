@@ -1,4 +1,4 @@
-package com.tecsup.centrotareas.ui.theme
+package com.willard.centrotareas.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

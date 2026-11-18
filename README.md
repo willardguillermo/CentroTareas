@@ -12,7 +12,7 @@ App que ejecuta tres tareas que tardan (una tarea con barra de progreso, un cál
 ## Estructura de paquetes
 
 ```
-com.tecsup.centrotareas/
+com.willard.centrotareas/
 ├── MainActivity.kt                  Crea el ViewModel con su Factory y muestra la pantalla
 ├── model/
 │   └── Estados.kt                   PrimosUi y CargaUi (sealed interface)
