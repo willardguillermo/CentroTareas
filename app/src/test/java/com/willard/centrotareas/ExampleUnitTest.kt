@@ -1,4 +1,4 @@
-package com.tecsup.centrotareas
+package com.willard.centrotareas
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.tecsup.centrotareas.data
+package com.willard.centrotareas.data
 
 import kotlinx.coroutines.flow.Flow
 

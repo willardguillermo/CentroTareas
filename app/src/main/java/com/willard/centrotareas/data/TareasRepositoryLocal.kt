@@ -1,4 +1,4 @@
-package com.tecsup.centrotareas.data
+package com.willard.centrotareas.data
 
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
