@@ -90,8 +90,19 @@ class TareasViewModel(private val repo: TareasRepository) : ViewModel() {
     private val _simularError = MutableStateFlow(false)
     val simularError: StateFlow<Boolean> = _simularError.asStateFlow()
 
+    private val _tiemposUnaPorUna = MutableStateFlow<List<Long>>(emptyList())
+    val tiemposUnaPorUna: StateFlow<List<Long>> = _tiemposUnaPorUna.asStateFlow()
+
+    private val _tiemposALaVez = MutableStateFlow<List<Long>>(emptyList())
+    val tiemposALaVez: StateFlow<List<Long>> = _tiemposALaVez.asStateFlow()
+
     fun cambiarSimularError(valor: Boolean) {
         _simularError.value = valor
+    }
+
+    fun limpiarTiempos() {
+        _tiemposUnaPorUna.value = emptyList()
+        _tiemposALaVez.value = emptyList()
     }
 
     fun cargarUnaPorUna() {
@@ -104,6 +115,7 @@ class TareasViewModel(private val repo: TareasRepository) : ViewModel() {
                 val pedidos = repo.cargarPedidos(_simularError.value)
                 val ms = System.currentTimeMillis() - inicio
                 _carga.value = CargaUi.Exito("Una por una", perfil, pedidos.size, ms)
+                _tiemposUnaPorUna.value = (_tiemposUnaPorUna.value + ms).takeLast(5)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -125,6 +137,7 @@ class TareasViewModel(private val repo: TareasRepository) : ViewModel() {
                 }
                 val ms = System.currentTimeMillis() - inicio
                 _carga.value = CargaUi.Exito("A la vez", perfil, pedidos.size, ms)
+                _tiemposALaVez.value = (_tiemposALaVez.value + ms).takeLast(5)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

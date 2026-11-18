@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -54,6 +55,8 @@ fun PantallaTareas(vm: TareasViewModel) {
     val progresoPrimos by vm.progresoPrimos.collectAsState()
     val carga by vm.carga.collectAsState()
     val simularError by vm.simularError.collectAsState()
+    val tiemposUnaPorUna by vm.tiemposUnaPorUna.collectAsState()
+    val tiemposALaVez by vm.tiemposALaVez.collectAsState()
     var toques by rememberSaveable { mutableIntStateOf(0) }
     var textoN by rememberSaveable { mutableStateOf("12000000") }
     var contadoHasta by rememberSaveable { mutableIntStateOf(0) }
@@ -193,7 +196,76 @@ fun PantallaTareas(vm: TareasViewModel) {
                         onReintentar = { vm.cargarALaVez() }
                     )
                 }
+                if (tiemposUnaPorUna.isNotEmpty() || tiemposALaVez.isNotEmpty()) {
+                    TablaTiempos(
+                        unaPorUna = tiemposUnaPorUna,
+                        aLaVez = tiemposALaVez,
+                        onLimpiar = { vm.limpiarTiempos() }
+                    )
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun TablaTiempos(
+    unaPorUna: List<Long>,
+    aLaVez: List<Long>,
+    onLimpiar: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = "Comparación de tiempos",
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text("#", modifier = Modifier.weight(1.4f), fontWeight = FontWeight.Bold)
+            Text("Una por una", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold)
+            Text("A la vez", modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold)
+        }
+
+        val maxFilas = maxOf(unaPorUna.size, aLaVez.size)
+        for (i in 0 until maxFilas) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text("${i + 1}", modifier = Modifier.weight(1.4f))
+                val tiempoUna = unaPorUna.getOrNull(i)?.let { "$it ms" } ?: "-"
+                Text(tiempoUna, modifier = Modifier.weight(2f))
+                val tiempoALaVez = aLaVez.getOrNull(i)?.let { "$it ms" } ?: "-"
+                Text(tiempoALaVez, modifier = Modifier.weight(2f))
+            }
+        }
+
+        val promUnaVal = if (unaPorUna.isNotEmpty()) unaPorUna.average().toLong() else null
+        val promALaVezVal = if (aLaVez.isNotEmpty()) aLaVez.average().toLong() else null
+
+        val promUnaTxt = promUnaVal?.let { "$it ms" } ?: "-"
+        val promALaVezTxt = promALaVezVal?.let { "$it ms" } ?: "-"
+
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text("Promedio", modifier = Modifier.weight(1.4f), fontWeight = FontWeight.Bold)
+            Text(promUnaTxt, modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold)
+            Text(promALaVezTxt, modifier = Modifier.weight(2f), fontWeight = FontWeight.Bold)
+        }
+
+        if (unaPorUna.isNotEmpty() && aLaVez.isNotEmpty()) {
+            val diff = (unaPorUna.average() - aLaVez.average()).toLong()
+            Text(
+                text = "Diferencia: $diff ms",
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+
+        TextButton(onClick = onLimpiar) {
+            Text("Limpiar")
         }
     }
 }
